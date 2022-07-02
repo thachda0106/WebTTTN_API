@@ -1,4 +1,5 @@
 import express from 'express';
+import { homeStart } from '../controllers/homeController';
 let router = express.Router();
 
 let initWebRoutes = (app) => {
@@ -6,9 +7,7 @@ let initWebRoutes = (app) => {
 	router.get('/', (req, res, next) => {
 		return res.send('hello world!');
 	});
-	router.get('/home', (req, res, next) => {
-		return res.send('hello world!');
-	});
+	router.get('/home', homeStart);
 	// method post, put....
 	// app use route
 	return app.use('/', router);
