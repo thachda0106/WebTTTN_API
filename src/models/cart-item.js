@@ -1,7 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-	class User extends Model {
+	class CartItem extends Model {
 		/**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -14,50 +14,33 @@ module.exports = (sequelize, DataTypes) => {
 			// Attribute.belongsToMany(models.Product, { through: models.ProductAttribute, foreignKey: 'productID' })
 		}
 	}
-	User.init(
+	CartItem.init(
 		{
-			userID: {
+			itemID: {
 				allowNull: false,
-				autoIncrement: true,
+				type: DataTypes.INTEGER,
 				primaryKey: true,
-				type: DataTypes.INTEGER
+				autoIncrement: true
 			},
-			fullName: {
+			productID: {
 				allowNull: false,
 				type: DataTypes.INTEGER
 			},
-			username: {
+			cartID: {
 				allowNull: false,
-				type: DataTypes.STRING
+				type: DataTypes.INTEGER
 			},
-			email: {
-				type: DataTypes.STRING(100),
+			quantity: {
 				allowNull: false,
-				unique: true
-			},
-			avatar: {
-				type: DataTypes.STRING,
-				allowNull: true
-			},
-			phoneNumber: {
-				type: DataTypes.STRING(10),
-				allowNull: true
-			},
-			shippingAddress: {
-				type: DataTypes.STRING,
-				allowNull: true
-			},
-			gender: {
-				type: DataTypes.BOOLEAN,
-				allowNull: true
+				type: DataTypes.INTEGER
 			}
 		},
 		{
 			freezeTableName: true,
 			timestamps: false,
 			sequelize,
-			modelName: 'User'
+			modelName: 'CartItem'
 		}
 	);
-	return User;
+	return CartItem;
 };

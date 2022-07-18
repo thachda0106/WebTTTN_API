@@ -1,7 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-	class User extends Model {
+	class Employee extends Model {
 		/**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -14,50 +14,53 @@ module.exports = (sequelize, DataTypes) => {
 			// Attribute.belongsToMany(models.Product, { through: models.ProductAttribute, foreignKey: 'productID' })
 		}
 	}
-	User.init(
+	Employee.init(
 		{
-			userID: {
+			employeeID: {
 				allowNull: false,
-				autoIncrement: true,
+				type: DataTypes.INTEGER,
 				primaryKey: true,
-				type: DataTypes.INTEGER
+				autoIncrement: true
 			},
-			fullName: {
-				allowNull: false,
-				type: DataTypes.INTEGER
-			},
-			username: {
+			avatar: {
 				allowNull: false,
 				type: DataTypes.STRING
 			},
 			email: {
-				type: DataTypes.STRING(100),
 				allowNull: false,
-				unique: true
+				type: DataTypes.STRING
 			},
-			avatar: {
-				type: DataTypes.STRING,
-				allowNull: true
-			},
-			phoneNumber: {
-				type: DataTypes.STRING(10),
-				allowNull: true
-			},
-			shippingAddress: {
-				type: DataTypes.STRING,
-				allowNull: true
+			fullName: {
+				allowNull: false,
+				type: DataTypes.STRING
 			},
 			gender: {
-				type: DataTypes.BOOLEAN,
-				allowNull: true
+				allowNull: false,
+				type: DataTypes.BOOLEAN
+			},
+			phoneNumber: {
+				allowNull: false,
+				type: DataTypes.STRING(10)
+			},
+			identification: {
+				allowNull: false,
+				type: DataTypes.STRING
+			},
+			dateOfBirth: {
+				allowNull: false,
+				type: DataTypes.STRING
+			},
+			username: {
+				allowNull: false,
+				type: DataTypes.STRING
 			}
 		},
 		{
 			freezeTableName: true,
 			timestamps: false,
 			sequelize,
-			modelName: 'User'
+			modelName: 'Employee'
 		}
 	);
-	return User;
+	return Employee;
 };

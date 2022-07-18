@@ -1,7 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-	class User extends Model {
+	class Order extends Model {
 		/**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -14,50 +14,47 @@ module.exports = (sequelize, DataTypes) => {
 			// Attribute.belongsToMany(models.Product, { through: models.ProductAttribute, foreignKey: 'productID' })
 		}
 	}
-	User.init(
+	Order.init(
 		{
+			orderID: {
+				allowNull: false,
+				type: DataTypes.INTEGER,
+				primaryKey: true,
+				autoIncrement: true
+			},
 			userID: {
 				allowNull: false,
-				autoIncrement: true,
-				primaryKey: true,
 				type: DataTypes.INTEGER
 			},
-			fullName: {
+			employeeID: {
 				allowNull: false,
 				type: DataTypes.INTEGER
 			},
-			username: {
+			voucherID: {
+				allowNull: true,
+				type: DataTypes.INTEGER
+			},
+			orderStatus: {
 				allowNull: false,
-				type: DataTypes.STRING
+				type: DataTypes.STRING(10)
 			},
-			email: {
-				type: DataTypes.STRING(100),
+			dateCreate: {
 				allowNull: false,
-				unique: true
+				defaultValue: DataTypes.NOW,
+				type: DataTypes.DATE
 			},
-			avatar: {
-				type: DataTypes.STRING,
-				allowNull: true
-			},
-			phoneNumber: {
-				type: DataTypes.STRING(10),
-				allowNull: true
-			},
-			shippingAddress: {
-				type: DataTypes.STRING,
-				allowNull: true
-			},
-			gender: {
-				type: DataTypes.BOOLEAN,
-				allowNull: true
+			dateDelivery: {
+				allowNull: false,
+				defaultValue: DataTypes.NOW,
+				type: DataTypes.DATE
 			}
 		},
 		{
 			freezeTableName: true,
 			timestamps: false,
 			sequelize,
-			modelName: 'User'
+			modelName: 'Order'
 		}
 	);
-	return User;
+	return Order;
 };

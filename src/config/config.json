@@ -4,7 +4,9 @@
     "password": null,
     "database": "db_webtttn",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "port": 9306
+
   },
   "test": {
     "username": "root",

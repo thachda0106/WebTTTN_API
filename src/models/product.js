@@ -1,7 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-	class User extends Model {
+	class Product extends Model {
 		/**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -14,50 +14,70 @@ module.exports = (sequelize, DataTypes) => {
 			// Attribute.belongsToMany(models.Product, { through: models.ProductAttribute, foreignKey: 'productID' })
 		}
 	}
-	User.init(
+	Product.init(
 		{
-			userID: {
+			productID: {
 				allowNull: false,
-				autoIncrement: true,
+				type: DataTypes.INTEGER,
 				primaryKey: true,
-				type: DataTypes.INTEGER
+				autoIncrement: true
 			},
-			fullName: {
+			categoryID: {
 				allowNull: false,
 				type: DataTypes.INTEGER
 			},
-			username: {
+			name: {
+				name: false,
+				type: DataTypes.STRING
+			},
+			price: {
+				allowNull: false,
+				type: DataTypes.FLOAT
+			},
+			thumbnail: {
 				allowNull: false,
 				type: DataTypes.STRING
 			},
-			email: {
-				type: DataTypes.STRING(100),
+			quantity: {
 				allowNull: false,
-				unique: true
+				type: DataTypes.INTEGER
 			},
-			avatar: {
-				type: DataTypes.STRING,
-				allowNull: true
+			description: {
+				allowNull: false,
+				type: DataTypes.TEXT
 			},
-			phoneNumber: {
-				type: DataTypes.STRING(10),
-				allowNull: true
+			brand: {
+				allowNull: false,
+				type: DataTypes.STRING
 			},
-			shippingAddress: {
-				type: DataTypes.STRING,
-				allowNull: true
+			origin: {
+				allowNull: false,
+				type: DataTypes.STRING
 			},
-			gender: {
-				type: DataTypes.BOOLEAN,
-				allowNull: true
+			guarantee: {
+				allowNull: false,
+				type: DataTypes.INTEGER(2)
+			},
+
+			discountPercent: {
+				allowNull: true,
+				type: DataTypes.FLOAT(2, 1)
+			},
+			dateDiscountStart: {
+				allowNull: false,
+				type: DataTypes.DATE
+			},
+			dateDiscountEnd: {
+				allowNull: false,
+				type: DataTypes.DATE
 			}
 		},
 		{
 			freezeTableName: true,
 			timestamps: false,
 			sequelize,
-			modelName: 'User'
+			modelName: 'Product'
 		}
 	);
-	return User;
+	return Product;
 };
