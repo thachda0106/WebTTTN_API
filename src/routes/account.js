@@ -1,12 +1,11 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
+import multer from 'multer';
 import db from '../models';
 import { createToken } from '../utils/middleware';
 import { uploadImg, encryptPassword } from '../utils/functions';
-import multer from 'multer';
+import sendEmail from '../utils/mailer';
 const accountRouter = express.Router();
-
-var upload = multer();
 // METHOD GET
 //LOGIN
 accountRouter.get('/login', async (req, res, next) => {
@@ -39,6 +38,13 @@ accountRouter.get('/login', async (req, res, next) => {
 		} else res.status(401).json('invalid password!');
 	} else res.status(401).json('username not found!');
 });
+
+// View reset password
+accountRouter.get('/update-password/:username', async (req, res, next) => {
+	let username = req.params.username;
+	res.render('updatePassword.ejs', { username, message: '' });
+});
+
 // METHOD POST
 // REGISTER
 accountRouter.post('/register', uploadImg.array('avatar', 1), async (req, res, next) => {
@@ -105,9 +111,53 @@ accountRouter.post('/register', uploadImg.array('avatar', 1), async (req, res, n
 		res.status(422).json('role type invalid!');
 	}
 });
-// METHOD PUT
-accountRouter.put('/', async (req, res, next) => {});
 
+// forget password
+accountRouter.post('/reset-password', async (req, res, next) => {
+	let email = req.body.email;
+	let user = await db.User.findOne({ where: { email } });
+	if (user) {
+		// check
+		try {
+			await sendEmail(
+				email,
+				'ĐẶT LẠI MẬT KHẨU',
+				`<b>Để đặt mật khẩu vui lòng click vào đường dẫn dưới!<b><br/><a href = "http://localhost:8081/api/v1/account/update-password/${user.username}">Reset password!</a>`
+			);
+
+			res.status(200).json(`Link update password received to email ${email} `);
+		} catch (error) {
+			console.log(error.message);
+			res.status(500).json(error);
+		}
+	} else res.status(404).json('Email user not exist!');
+});
+// forget password
+accountRouter.post('/update-password/:username', multer().array(), async (req, res, next) => {
+	let username = req.params.username,
+		password = req.body.password,
+		confirmPassword = req.body['confirm-password'];
+
+	if (password !== confirmPassword) {
+		res.render('updatePassword.ejs', { message: 'Mật khẩu và nhập lại mật phải trùng nhau!', username: username });
+	}
+	{
+		let ertPassword = await encryptPassword(password);
+		try {
+			db.Account.update(
+				{ password: ertPassword },
+				{
+					where: {
+						username
+					}
+				}
+			);
+			res.status(201).json('reset password success!');
+		} catch (error) {
+			res.status(500).json('update password failed!');
+		}
+	}
+});
 //
 module.exports = {
 	accountAPI: (app) => {

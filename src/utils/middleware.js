@@ -13,7 +13,7 @@ const createToken = (payload) => {
 };
 
 const checkSessionLoginExp = (req, res, next) => {
-	if (req.path === '/api/v1/account/login' || req.path === '/api/v1/account/register') {
+	if (req.path.includes('/api/v1/account/')) {
 		return next();
 	} else {
 		let token = req.cookies.token;
