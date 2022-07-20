@@ -1,5 +1,5 @@
 import express from 'express';
-import { homeStart } from '../controllers/homeController';
+import { homeStart } from '../controllers/indexController.js';
 let router = express.Router();
 
 let initWebRoutes = (app) => {
