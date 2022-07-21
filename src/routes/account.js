@@ -81,7 +81,7 @@ accountRouter.post('/register', uploadImg.array('avatar', 1), async (req, res, n
 			// create account type employee
 		} else if (role.type === 'employee') {
 			console.log({ file: req.files[0] });
-			let avatar = '/public/imgs/avatars' + req.files[0].filename,
+			let avatar = '/public/imgs/avatars/' + req.files[0].filename,
 				email = req.body.email,
 				fullName = req.body.fullName,
 				gender = req.body.gender,

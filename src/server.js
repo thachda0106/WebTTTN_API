@@ -7,10 +7,11 @@ import cookieParser from 'cookie-parser';
 import viewEngine from './config/viewEngine';
 import initWebRoutes from './routes';
 import connectDB from './config/connectDB';
-import { accountAPI } from './routes/account.js';
 import { checkSessionLoginExp } from './utils/middleware.js';
-import { uploadImg } from './utils/functions';
-
+import { accountAPI } from './routes/account';
+import { categoriesAPI } from './routes/categories';
+import { productAPI } from './routes/product';
+import { cartAPI } from './routes/cart';
 dotenv.config();
 
 // INIT APP
@@ -29,6 +30,9 @@ viewEngine(app);
 // app use route api
 initWebRoutes(app);
 accountAPI(app);
+categoriesAPI(app);
+productAPI(app);
+cartAPI(app);
 // connect db
 connectDB();
 

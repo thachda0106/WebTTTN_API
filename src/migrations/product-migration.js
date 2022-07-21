@@ -13,7 +13,7 @@ module.exports = {
 				type: Sequelize.INTEGER
 			},
 			name: {
-				name: false,
+				allowNull: false,
 				type: Sequelize.STRING
 			},
 			price: {
@@ -50,11 +50,11 @@ module.exports = {
 				type: Sequelize.FLOAT(2, 1)
 			},
 			dateDiscountStart: {
-				allowNull: false,
+				allowNull: true,
 				type: Sequelize.DATE
 			},
 			dateDiscountEnd: {
-				allowNull: false,
+				allowNull: true,
 				type: Sequelize.DATE
 			}
 		});

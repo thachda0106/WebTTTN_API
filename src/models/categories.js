@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 			// Attribute.belongsToMany(models.Product, { through: models.ProductAttribute, foreignKey: 'productID' })
 		}
 	}
+
 	Categories.init(
 		{
 			categoryID: {
@@ -24,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			name: {
 				allowNull: false,
+				unique: true,
 				type: DataTypes.STRING
 			}
 		},

@@ -14,7 +14,16 @@ const storageAvatar = multer.diskStorage({
 		cb(null, Date.now() + '_' + file.originalname);
 	}
 });
+const storageProductImgs = multer.diskStorage({
+	destination: function(req, file, cb) {
+		cb(null, 'src/public/imgs/products');
+	},
+	filename: function(req, file, cb) {
+		cb(null, Date.now() + '_' + file.originalname);
+	}
+});
 const uploadImg = multer({ storage: storageAvatar });
+const uploadProductImgs = multer({ storage: storageProductImgs });
 
 const encryptPassword = async (password) => {
 	try {
@@ -28,5 +37,6 @@ const encryptPassword = async (password) => {
 
 module.exports = {
 	uploadImg,
+	uploadProductImgs,
 	encryptPassword
 };

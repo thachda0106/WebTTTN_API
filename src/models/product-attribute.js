@@ -18,11 +18,13 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			productID: {
 				allowNull: false,
-				type: DataTypes.INTEGER
+				type: DataTypes.INTEGER,
+				primaryKey: true
 			},
 			attributeID: {
 				allowNull: false,
-				type: DataTypes.INTEGER
+				type: DataTypes.INTEGER,
+				primaryKey: true
 			},
 			value: {
 				allowNull: false,
@@ -33,7 +35,8 @@ module.exports = (sequelize, DataTypes) => {
 			freezeTableName: true,
 			timestamps: false,
 			sequelize,
-			modelName: 'ProductAttribute'
+			modelName: 'ProductAttribute',
+			tableName: 'product_attribute'
 		}
 	);
 	return ProductAttribute;
