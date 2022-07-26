@@ -1,8 +1,8 @@
 'use strict';
 module.exports = {
 	async up(queryInterface, Sequelize) {
-		await queryInterface.createTable('user_voucher', {
-			userID: {
+		await queryInterface.createTable('customer_voucher', {
+			customerID: {
 				type: Sequelize.INTEGER,
 				allowNull: false
 			},
@@ -18,6 +18,6 @@ module.exports = {
 		});
 	},
 	async down(queryInterface, Sequelize) {
-		await queryInterface.dropTable('user_voucher');
+		await queryInterface.dropTable('customer_voucher');
 	}
 };

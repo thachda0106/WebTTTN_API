@@ -28,6 +28,11 @@ module.exports = (sequelize, DataTypes) => {
 			roleID: {
 				allowNull: false,
 				type: DataTypes.INTEGER
+			},
+			enable: {
+				allowNull: false,
+				type: DataTypes.BOOLEAN,
+				defaultValue: false
 			}
 		},
 		{

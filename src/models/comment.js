@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
 				primaryKey: true,
 				autoIncrement: true
 			},
-			userID: {
+			customerID: {
 				allowNull: false,
 				type: DataTypes.INTEGER
 			},

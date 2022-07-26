@@ -5,9 +5,10 @@ module.exports = {
 			cartID: {
 				allowNull: false,
 				type: Sequelize.INTEGER,
-				primaryKey: true
+				primaryKey: true,
+				autoIncrement: true
 			},
-			userID: {
+			customerID: {
 				allowNull: false,
 				type: Sequelize.INTEGER,
 				primaryKey: true

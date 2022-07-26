@@ -5,7 +5,7 @@ module.exports = {
 			.addConstraint('account', {
 				type: 'FOREIGN KEY',
 				fields: [ 'roleID' ], // field name of the foreign key
-				name: 'fk_user_roleID',
+				name: 'fk_account_roleID',
 				references: {
 					table: 'role', // Target model
 					field: 'roleID' // key in Target model
@@ -55,11 +55,11 @@ module.exports = {
 			.then(() => {
 				queryInterface.addConstraint('cart', {
 					type: 'FOREIGN KEY',
-					fields: [ 'userID' ], // field name of the foreign key
-					name: 'fk_cart-userID',
+					fields: [ 'customerID' ], // field name of the foreign key
+					name: 'fk_cart-customerID',
 					references: {
-						table: 'user', // Target model
-						field: 'userID' // key in Target model
+						table: 'customer', // Target model
+						field: 'customerID' // key in Target model
 					},
 					onUpdate: 'CASCADE',
 					onDelete: 'RESTRICT'
@@ -68,11 +68,11 @@ module.exports = {
 			.then(() => {
 				queryInterface.addConstraint('comment', {
 					type: 'FOREIGN KEY',
-					fields: [ 'userID' ], // field name of the foreign key
-					name: 'fk_comment-userID',
+					fields: [ 'customerID' ], // field name of the foreign key
+					name: 'fk_comment-customerID',
 					references: {
-						table: 'user', // Target model
-						field: 'userID' // key in Target model
+						table: 'customer', // Target model
+						field: 'customerID' // key in Target model
 					},
 					onUpdate: 'CASCADE',
 					onDelete: 'RESTRICT'
@@ -133,11 +133,11 @@ module.exports = {
 			.then(() => {
 				queryInterface.addConstraint('order', {
 					type: 'FOREIGN KEY',
-					fields: [ 'userID' ], // field name of the foreign key
-					name: 'fk_order-userID',
+					fields: [ 'customerID' ], // field name of the foreign key
+					name: 'fk_order-customerID',
 					references: {
-						table: 'user', // Target model
-						field: 'userID' // key in Target model
+						table: 'customer', // Target model
+						field: 'customerID' // key in Target model
 					},
 					onUpdate: 'CASCADE',
 					onDelete: 'RESTRICT'
@@ -224,11 +224,11 @@ module.exports = {
 			.then(() => {
 				queryInterface.addConstraint('product_rating', {
 					type: 'FOREIGN KEY',
-					fields: [ 'userID' ], // field name of the foreign key
-					name: 'fk_product_rating-userID',
+					fields: [ 'customerID' ], // field name of the foreign key
+					name: 'fk_product_rating-customerID',
 					references: {
-						table: 'user', // Target model
-						field: 'userID' // key in Target model
+						table: 'customer', // Target model
+						field: 'customerID' // key in Target model
 					},
 					onUpdate: 'CASCADE',
 					onDelete: 'RESTRICT'
@@ -250,34 +250,34 @@ module.exports = {
 			.then(() => {
 				queryInterface.addConstraint('reply', {
 					type: 'FOREIGN KEY',
-					fields: [ 'userID' ], // field name of the foreign key
-					name: 'fk_reply-userID',
+					fields: [ 'customerID' ], // field name of the foreign key
+					name: 'fk_reply-customerID',
 					references: {
-						table: 'user', // Target model
-						field: 'userID' // key in Target model
+						table: 'customer', // Target model
+						field: 'customerID' // key in Target model
 					},
 					onUpdate: 'CASCADE',
 					onDelete: 'RESTRICT'
 				});
 			})
 			.then(() => {
-				queryInterface.addConstraint('user_voucher', {
+				queryInterface.addConstraint('customer_voucher', {
 					type: 'FOREIGN KEY',
-					fields: [ 'userID' ], // field name of the foreign key
-					name: 'fk_user_voucher-userID',
+					fields: [ 'customerID' ], // field name of the foreign key
+					name: 'fk_customer_voucher-customerID',
 					references: {
-						table: 'user', // Target model
-						field: 'userID' // key in Target model
+						table: 'customer', // Target model
+						field: 'customerID' // key in Target model
 					},
 					onUpdate: 'CASCADE',
 					onDelete: 'RESTRICT'
 				});
 			})
 			.then(() => {
-				queryInterface.addConstraint('user_voucher', {
+				queryInterface.addConstraint('customer_voucher', {
 					type: 'FOREIGN KEY',
 					fields: [ 'voucherID' ], // field name of the foreign key
-					name: 'fk_user_voucher-voucherID',
+					name: 'fk_customer_voucher-voucherID',
 					references: {
 						table: 'voucher', // Target model
 						field: 'voucherID' // key in Target model
@@ -300,10 +300,10 @@ module.exports = {
 				});
 			})
 			.then(() => {
-				queryInterface.addConstraint('user', {
+				queryInterface.addConstraint('customer', {
 					type: 'FOREIGN KEY',
 					fields: [ 'username' ], // field name of the foreign key
-					name: 'fk_user-username',
+					name: 'fk_customer-username',
 					references: {
 						table: 'account', // Target model
 						field: 'username' // key in Target model

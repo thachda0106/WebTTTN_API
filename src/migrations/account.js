@@ -14,6 +14,11 @@ module.exports = {
 			roleID: {
 				allowNull: false,
 				type: Sequelize.INTEGER
+			},
+			enable: {
+				allowNull: false,
+				type: Sequelize.BOOLEAN,
+				defaultValue: false
 			}
 		});
 	},

@@ -19,9 +19,10 @@ module.exports = (sequelize, DataTypes) => {
 			cartID: {
 				allowNull: false,
 				type: DataTypes.INTEGER,
-				primaryKey: true
+				primaryKey: true,
+				autoIncrement: true
 			},
-			userID: {
+			customerID: {
 				allowNull: false,
 				type: DataTypes.INTEGER,
 				primaryKey: true

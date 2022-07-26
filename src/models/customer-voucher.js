@@ -1,7 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-	class UserVoucher extends Model {
+	class CustomerVoucher extends Model {
 		/**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -14,14 +14,16 @@ module.exports = (sequelize, DataTypes) => {
 			// Attribute.belongsToMany(models.Product, { through: models.ProductAttribute, foreignKey: 'productID' })
 		}
 	}
-	UserVoucher.init(
+	CustomerVoucher.init(
 		{
-			userID: {
+			customerID: {
 				type: DataTypes.INTEGER,
+				primaryKey: true,
 				allowNull: false
 			},
 			voucherID: {
 				type: DataTypes.INTEGER,
+				primaryKey: true,
 				allowNull: false
 			},
 			isUsed: {
@@ -34,8 +36,9 @@ module.exports = (sequelize, DataTypes) => {
 			freezeTableName: true,
 			timestamps: false,
 			sequelize,
-			modelName: 'UserVoucher'
+			modelName: 'CustomerVoucher',
+			tableName: 'customer_voucher'
 		}
 	);
-	return UserVoucher;
+	return CustomerVoucher;
 };

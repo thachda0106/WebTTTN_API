@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	Order.init(
 		{
-			orderID: {
+			customerID: {
 				allowNull: false,
 				type: DataTypes.INTEGER,
 				primaryKey: true,
