@@ -26,9 +26,9 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				type: DataTypes.INTEGER
 			},
-			customerID: {
+			username: {
 				allowNull: false,
-				type: DataTypes.INTEGER
+				type: DataTypes.STRING
 			},
 			content: {
 				type: DataTypes.STRING,

@@ -18,10 +18,12 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			orderID: {
 				allowNull: false,
+				primaryKey: true,
 				type: DataTypes.INTEGER
 			},
 			productID: {
 				allowNull: false,
+				primaryKey: true,
 				type: DataTypes.INTEGER
 			},
 			quantity: {

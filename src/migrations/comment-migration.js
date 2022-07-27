@@ -8,13 +8,17 @@ module.exports = {
 				primaryKey: true,
 				autoIncrement: true
 			},
-			customerID: {
+			username: {
 				allowNull: false,
-				type: Sequelize.INTEGER
+				type: Sequelize.STRING
 			},
 			productID: {
 				allowNull: false,
 				type: Sequelize.INTEGER
+			},
+			content: {
+				type: Sequelize.STRING,
+				allowNull: false
 			},
 			createdAt: {
 				allowNull: false,

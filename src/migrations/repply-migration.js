@@ -12,9 +12,9 @@ module.exports = {
 				allowNull: false,
 				type: Sequelize.INTEGER
 			},
-			customerID: {
+			username: {
 				allowNull: false,
-				type: Sequelize.INTEGER
+				type: Sequelize.STRING
 			},
 			content: {
 				type: Sequelize.STRING,

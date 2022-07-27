@@ -28,11 +28,6 @@ module.exports = {
 				allowNull: false,
 				defaultValue: Sequelize.NOW,
 				type: Sequelize.DATE
-			},
-			dateDelivery: {
-				allowNull: false,
-				defaultValue: Sequelize.NOW,
-				type: Sequelize.DATE
 			}
 		});
 	},

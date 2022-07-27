@@ -32,7 +32,19 @@ productRouter.get('/all', async (req, res, next) => {
 				attributes: { exclude: [ 'productID' ] },
 				where: { productID: products[i].dataValues.productID }
 			});
-			console.log(productImages);
+			// product Rating
+			let productRatings = await db.ProductRating.findAll({
+				attributes: { exclude: [ 'productID' ] },
+				where: { productID: products[i].dataValues.productID }
+			});
+
+			let totalStar = 0;
+			for (const rating of productRatings) {
+				totalStar += rating.dataValues.starNumber;
+			}
+			if (totalStar === 0) products[i].dataValues.starNumber = 0;
+			else products[i].dataValues.starNumber = (totalStar / productRatings.length).toFixed(1);
+			products[i].dataValues.rating = productRatings;
 			products[i].dataValues.attributes = attributes;
 			products[i].dataValues.images = productImages;
 		}
@@ -67,6 +79,19 @@ productRouter.get('/:productID', async (req, res, next) => {
 				attributes: { exclude: [ 'productID' ] },
 				where: { productID: product.dataValues.productID }
 			});
+			// product Rating
+			let productRatings = await db.ProductRating.findAll({
+				attributes: { exclude: [ 'productID' ] },
+				where: { productID: product.dataValues.productID }
+			});
+
+			let totalStar = 0;
+			for (const rating of productRatings) {
+				totalStar += rating.dataValues.starNumber;
+			}
+			if (totalStar === 0) product.dataValues.starNumber = 0;
+			else product.dataValues.starNumber = (totalStar / productRatings.length).toFixed(1);
+			product.dataValues.rating = productRatings;
 			product.dataValues.images = productImages;
 			product.dataValues.attributes = attributes;
 			res.status(200).json(product);
@@ -75,6 +100,18 @@ productRouter.get('/:productID', async (req, res, next) => {
 		res.status(400).json(error.message);
 	}
 });
+
+// get all product Rating for product
+productRouter.get('/rating/:productID', async (req, res, next) => {
+	let productID = req.params.productID;
+	try {
+		let productRatings = await db.ProductRating.findAll({ where: { productID } });
+		res.status(200).json(productRatings);
+	} catch (error) {
+		res.status(400).json(error.message);
+	}
+});
+
 // METHOD POST
 productRouter.post('/', uploadProductImgs.array('thumbnail', 1), async (req, res, next) => {
 	let categoryID = req.body.categoryID,
@@ -145,7 +182,54 @@ productRouter.post('/imgs/:productID', uploadProductImgs.array('images', 10), as
 		return res.status(400).json(error.message);
 	}
 });
-
+// ==========================================================================
+// Product Rating
+// add product Images
+productRouter.post('/rating', body('starNumber').isInt({ min: 1, max: 5 }), async (req, res, next) => {
+	// validation body input
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ errors: errors.array() });
+	}
+	// handle
+	let productID = req.body.productID,
+		customerID = req.body.customerID,
+		starNumber = req.body.starNumber,
+		content = req.body.content;
+	let productRating = { productID, customerID, starNumber, content };
+	try {
+		let rating = await db.ProductRating.create(productRating);
+		return res.status(201).json(rating);
+	} catch (error) {
+		return res.status(400).json(error);
+	}
+});
+// add comment
+productRouter.post('/comment', async (req, res, next) => {
+	let productID = req.body.productID,
+		username = req.body.username,
+		content = req.body.content;
+	let newComment = { productID, username, content };
+	try {
+		let comment = await db.Comment.create(newComment);
+		return res.status(201).json(comment);
+	} catch (error) {
+		return res.status(400).json(error);
+	}
+});
+// add reply
+productRouter.post('/comment/reply', async (req, res, next) => {
+	let commentID = req.body.commentID,
+		username = req.body.username,
+		content = req.body.content;
+	let newReply = { commentID, username, content };
+	try {
+		let reply = await db.Reply.create(newReply);
+		return res.status(201).json(reply);
+	} catch (error) {
+		return res.status(400).json(error);
+	}
+});
 // METHOD PUT
 // update info property of products
 productRouter.put('/:productID', async (req, res, next) => {
@@ -164,6 +248,35 @@ productRouter.put('/:productID', async (req, res, next) => {
 });
 
 // update thumbnail, Images products
+
+//update comment
+productRouter.put('/comment/:commentID', async (req, res, next) => {
+	let commentID = req.params.commentID,
+		content = req.body.content,
+		dateNow = new Date(Date.now());
+
+	try {
+		await db.Comment.update({ content, updatedAt: dateNow }, { where: { commentID } });
+		return res.status(201).json('update comment success!');
+	} catch (error) {
+		console.log(error);
+		return res.status(400).json(error.message);
+	}
+});
+//update reply
+productRouter.put('/comment/reply/:replyID', async (req, res, next) => {
+	let replyID = req.params.replyID,
+		content = req.body.content,
+		dateNow = new Date(Date.now());
+
+	try {
+		await db.Reply.update({ content, updatedAt: dateNow }, { where: { replyID } });
+		return res.status(201).json('update reply success!');
+	} catch (error) {
+		console.log(error);
+		return res.status(400).json(error.message);
+	}
+});
 //
 // METHOD DELETE
 productRouter.delete('/:productID', async (req, res, next) => {
@@ -178,6 +291,31 @@ productRouter.delete('/:productID', async (req, res, next) => {
 		return res.status(400).json(error.message);
 	}
 });
+
+//delete comment
+productRouter.delete('/comment/:commentID', async (req, res, next) => {
+	let commentID = req.params.commentID;
+	try {
+		await db.Reply.destroy({ where: { commentID } });
+		await db.Comment.destroy({ where: { commentID } });
+		return res.status(204).json('deleted comment!');
+	} catch (error) {
+		console.log(error);
+		return res.status(400).json(error.message);
+	}
+});
+//delete reply
+productRouter.delete('/comment/reply/:replyID', async (req, res, next) => {
+	let replyID = req.params.replyID;
+	try {
+		await db.Reply.destroy({ where: { replyID } });
+		return res.status(204).json('deleted reply!');
+	} catch (error) {
+		console.log(error);
+		return res.status(400).json(error.message);
+	}
+});
+//
 //
 module.exports = {
 	productAPI: (app) => {

@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				type: DataTypes.INTEGER
 			},
-			startNumber: {
+			starNumber: {
 				type: DataTypes.INTEGER(1),
 				allowNull: false
 			},

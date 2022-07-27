@@ -68,11 +68,11 @@ module.exports = {
 			.then(() => {
 				queryInterface.addConstraint('comment', {
 					type: 'FOREIGN KEY',
-					fields: [ 'customerID' ], // field name of the foreign key
-					name: 'fk_comment-customerID',
+					fields: [ 'username' ], // field name of the foreign key
+					name: 'fk_comment-username',
 					references: {
-						table: 'customer', // Target model
-						field: 'customerID' // key in Target model
+						table: 'account', // Target model
+						field: 'username' // key in Target model
 					},
 					onUpdate: 'CASCADE',
 					onDelete: 'RESTRICT'
@@ -250,11 +250,11 @@ module.exports = {
 			.then(() => {
 				queryInterface.addConstraint('reply', {
 					type: 'FOREIGN KEY',
-					fields: [ 'customerID' ], // field name of the foreign key
-					name: 'fk_reply-customerID',
+					fields: [ 'username' ], // field name of the foreign key
+					name: 'fk_reply-username',
 					references: {
-						table: 'customer', // Target model
-						field: 'customerID' // key in Target model
+						table: 'account', // Target model
+						field: 'username' // key in Target model
 					},
 					onUpdate: 'CASCADE',
 					onDelete: 'RESTRICT'

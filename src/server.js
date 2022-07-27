@@ -12,6 +12,10 @@ import { accountAPI } from './routes/account';
 import { categoriesAPI } from './routes/categories';
 import { productAPI } from './routes/product';
 import { cartAPI } from './routes/cart';
+import { voucherAPI } from './routes/voucher';
+import { customerAPI } from './routes/customer';
+import { orderAPI } from './routes/order';
+
 dotenv.config();
 
 // INIT APP
@@ -33,6 +37,9 @@ accountAPI(app);
 categoriesAPI(app);
 productAPI(app);
 cartAPI(app);
+voucherAPI(app);
+customerAPI(app);
+orderAPI(app);
 // connect db
 connectDB();
 

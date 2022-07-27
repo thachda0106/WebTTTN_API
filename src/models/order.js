@@ -16,13 +16,13 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	Order.init(
 		{
-			customerID: {
+			orderID: {
 				allowNull: false,
 				type: DataTypes.INTEGER,
 				primaryKey: true,
 				autoIncrement: true
 			},
-			userID: {
+			customerID: {
 				allowNull: false,
 				type: DataTypes.INTEGER
 			},
@@ -36,14 +36,10 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			orderStatus: {
 				allowNull: false,
+				defaultValue: 'PENDING',
 				type: DataTypes.STRING(10)
 			},
 			dateCreate: {
-				allowNull: false,
-				defaultValue: DataTypes.NOW,
-				type: DataTypes.DATE
-			},
-			dateDelivery: {
 				allowNull: false,
 				defaultValue: DataTypes.NOW,
 				type: DataTypes.DATE

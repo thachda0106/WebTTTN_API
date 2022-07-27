@@ -22,13 +22,17 @@ module.exports = (sequelize, DataTypes) => {
 				primaryKey: true,
 				autoIncrement: true
 			},
-			customerID: {
+			username: {
 				allowNull: false,
-				type: DataTypes.INTEGER
+				type: DataTypes.STRING
 			},
 			productID: {
 				allowNull: false,
 				type: DataTypes.INTEGER
+			},
+			content: {
+				type: DataTypes.STRING,
+				allowNull: false
 			},
 			createdAt: {
 				allowNull: false,

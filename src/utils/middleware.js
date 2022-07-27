@@ -6,8 +6,9 @@ var publicKey = fs.readFileSync(path.join(path.dirname(__dirname), './key/public
 
 const createToken = (payload) => {
 	// create jwt token with payload and exp: 30m
-	const token = jwt.sign({ payload, exp: Math.floor(Date.now() / 1000) + 30 * 60 }, privateKey, {
-		algorithm: 'RS256'
+	const token = jwt.sign({ payload }, privateKey, {
+		algorithm: 'RS256',
+		expiresIn: '2 days'
 	});
 	return token;
 };

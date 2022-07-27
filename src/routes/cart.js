@@ -42,29 +42,36 @@ cartRouter.post(
 			return res.status(400).json({ errors: errors.array() });
 		}
 		// handle
+		//
 		let productID = req.body.productID,
 			cartID = req.body.cartID,
 			quantity = req.body.quantity;
-		let cartItem = await db.CartItem.findOne({ where: { productID, cartID } });
+		let product, cartItem;
+		try {
+			product = await db.Product.findByPk(productID);
+			cartItem = await db.CartItem.findOne({ where: { productID, cartID } });
+			if (product.dataValues.quantity == 0) return res.status(400).json('product effete!');
+		} catch (error) {
+			return res.status(400).json(error);
+		}
 		if (cartItem) {
 			try {
 				await db.CartItem.update(
 					{ quantity: parseInt(quantity) + parseInt(cartItem.dataValues.quantity) },
 					{ where: { itemID: cartItem.dataValues.itemID } }
 				);
-				res.status(201).json('add cartItem success!');
 			} catch (error) {
 				return res.status(400).json({ errors });
 			}
 		} else {
 			let newCart = { productID, cartID, quantity };
 			try {
-				let cartItem = await db.CartItem.create(newCart);
-				return res.status(201).json(cartItem);
+				await db.CartItem.create(newCart);
 			} catch (error) {
 				return res.status(400).json({ errors });
 			}
 		}
+		res.status(201).json('add cartItem success!');
 	}
 );
 // METHOD PUT
