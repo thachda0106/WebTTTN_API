@@ -46,12 +46,15 @@ cartRouter.post(
 		let productID = req.body.productID,
 			cartID = req.body.cartID,
 			quantity = req.body.quantity;
-		let product, cartItem;
+		let product,
+			cartItem,
+			total = 1;
 		try {
 			product = await db.Product.findByPk(productID);
 			cartItem = await db.CartItem.findOne({ where: { productID, cartID } });
 			if (product.dataValues.quantity == 0) return res.status(400).json('product effete!');
 		} catch (error) {
+			console.log(error);
 			return res.status(400).json(error);
 		}
 		if (cartItem) {
@@ -60,18 +63,23 @@ cartRouter.post(
 					{ quantity: parseInt(quantity) + parseInt(cartItem.dataValues.quantity) },
 					{ where: { itemID: cartItem.dataValues.itemID } }
 				);
+				total = +cartItem.dataValues.quantity + 1;
 			} catch (error) {
-				return res.status(400).json({ errors });
+				console.log(error);
+				return res.status(400).json({ error });
 			}
 		} else {
 			let newCart = { productID, cartID, quantity };
 			try {
-				await db.CartItem.create(newCart);
+				cartItem = await db.CartItem.create(newCart);
 			} catch (error) {
-				return res.status(400).json({ errors });
+				console.log(error);
+				return res.status(400).json({ error });
 			}
 		}
-		res.status(201).json('add cartItem success!');
+
+		let rest = { itemID: cartItem.dataValues.itemID, quantity: total };
+		res.status(201).json(rest);
 	}
 );
 // METHOD PUT
@@ -95,6 +103,36 @@ cartRouter.put('/:itemID', async (req, res, next) => {
 		}
 	} else return res.status(404).json('cartItem not found!');
 });
+
+//increase
+cartRouter.put('/increase/:itemID', async (req, res, next) => {
+	let itemID = req.params.itemID;
+	let cartItem = await db.CartItem.findByPk(itemID);
+	if (cartItem) {
+		try {
+			try {
+				// let quantity = parseInt(cartItem.dataValues.quantity) + 1;
+				await db.CartItem.update({ quantity: cartItem.dataValues.quantity + 1 }, { where: { itemID } });
+				return res.status(201).json('increase quantity success!');
+			} catch (error) {
+				return res.status(400).json(error);
+			}
+		} catch (error) {
+			return res.status(400).json(error);
+		}
+	} else return res.status(404).json('cartItem not found!');
+});
+// METHOD DELETE
+cartRouter.delete('/all/:cartID', async (req, res, next) => {
+	let cartID = req.params.cartID;
+	try {
+		await db.CartItem.destroy({ where: { cartID } });
+		return res.status(204).json('deleted all!');
+	} catch (error) {
+		return res.status(400).json(error);
+	}
+});
+//
 // METHOD DELETE
 cartRouter.delete('/:itemID', async (req, res, next) => {
 	let itemID = req.params.itemID;
@@ -112,7 +150,6 @@ cartRouter.delete('/:itemID', async (req, res, next) => {
 		}
 	} else return res.status(404).json('cartItem not found!');
 });
-//
 module.exports = {
 	cartAPI: (app) => {
 		return app.use('/api/v1/cart', cartRouter);

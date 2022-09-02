@@ -26,11 +26,19 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				type: DataTypes.INTEGER
 			},
-			employeeID: {
+			shippingAddress: {
 				allowNull: false,
-				type: DataTypes.INTEGER
+				type: DataTypes.STRING
 			},
-			voucherID: {
+			phoneNumber: {
+				allowNull: false,
+				type: DataTypes.STRING(15)
+			},
+			fullName: {
+				allowNull: false,
+				type: DataTypes.STRING
+			},
+			employeeID: {
 				allowNull: true,
 				type: DataTypes.INTEGER
 			},
@@ -38,6 +46,11 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				defaultValue: 'PENDING',
 				type: DataTypes.STRING(10)
+			},
+			isPay: {
+				allowNull: false,
+				defaultValue: false,
+				type: DataTypes.BOOLEAN
 			},
 			dateCreate: {
 				allowNull: false,

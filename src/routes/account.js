@@ -2,14 +2,64 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import multer from 'multer';
 import db from '../models';
+import fs from 'fs';
+import jwt from 'jsonwebtoken';
+import path from 'path';
+const publicKey = fs.readFileSync(path.join(path.dirname(__dirname), './key/public.crt'));
 const { body, validationResult } = require('express-validator');
 import { createToken } from '../utils/middleware';
 import { uploadImg, encryptPassword } from '../utils/functions';
 import sendEmail from '../utils/mailer';
 const accountRouter = express.Router();
 // METHOD GET
-//LOGIN
-accountRouter.get('/login', async (req, res, next) => {
+//
+
+/*
+let customerID = req.params.customerID;
+	try {
+		let cart = await db.Cart.findOne({ where: { customerID } });
+		if (!cart) return res.status(400).json('user not exits!');
+		//
+		let cartItems = await db.CartItem.findAll({
+			attributes: { exclude: [ 'cartID' ] },
+			where: { cartID: cart.dataValues.cartID }
+		});
+		for (let i = 0; i < cartItems.length; i++) {
+			let productID = cartItems[i].dataValues.productID;
+			delete cartItems[i].dataValues.productID;
+			let product = await db.Product.findByPk(productID);
+			cartItems[i].dataValues.product = product.dataValues;
+		}
+
+		cart.dataValues.cartItems = cartItems;
+		return res.status(200).json(cart);
+	} catch (error) {
+		return res.status(400).json(error);
+	} 
+	*/
+accountRouter.get('/check-session', async (req, res, next) => {
+	try {
+		let token = req.cookies.token?.split(';')[0];
+		if(!token) return res.status(403).json('session login expired!');
+		let rest = jwt.verify(token, publicKey, { algorithms: [ 'RS256' ] });
+		let payload;
+		if (rest.payload.role === 'customer') {
+			payload = await db.Customer.findOne({ where: { username: rest.payload.username } });
+			payload.dataValues.role = 'customer';
+		} else {
+			payload = await db.Employee.findOne({ where: { username: rest.payload.username } });
+			if (role.dataValues.type === 'employee') payload.dataValues.role = 'employee';
+			else payload.dataValues.role = 'manager';
+		}
+		return res.json(payload);
+	} catch (error) {
+		console.log(error);
+		res.status(403).json('session login expired!');
+	}
+});
+
+//
+accountRouter.post('/login', async (req, res, next) => {
 	let username = req.body.username,
 		password = req.body.password;
 	console.log({ file: req.files });
@@ -19,8 +69,6 @@ accountRouter.get('/login', async (req, res, next) => {
 		if (account.dataValues.enable === true) return res.status(401).json('account had been blocked!');
 		// compare password and account password
 		if (bcrypt.compareSync(password, account.password)) {
-			delete account.password;
-			var token = createToken(account);
 			//
 			let role = await db.Role.findByPk(account.roleID);
 			let payload = {};
@@ -33,9 +81,14 @@ accountRouter.get('/login', async (req, res, next) => {
 				else payload.dataValues.role = 'manager';
 			}
 			//create cookie respone on client Site use check login session
-			res.cookie('token', token, {
-				httpOnly: true
-			});
+			var token = createToken(payload);
+			res.cookie(
+				'token',
+				token,
+				{
+					// httpOnly: true
+				}
+			);
 			// res result account data
 			res.status(200).json({ login: payload });
 		} else res.status(401).json('invalid password!');
@@ -209,7 +262,7 @@ accountRouter.post('/reset-password', async (req, res, next) => {
 			await sendEmail(
 				email,
 				'ĐẶT LẠI MẬT KHẨU',
-				`<b>Để đặt mật khẩu vui lòng click vào đường dẫn dưới. Link có hiệu lực trong 5 phút! <b><br/><a href = "http://localhost:8081/api/v1/account/update-password-employee/${employee.username}/${Date.now()}">Reset password!</a>`
+				`<b>Để đặt mật khẩu vui lòng click vào đường dẫn dưới. Link có hiệu lực trong 5 phút! <b><br/><a href = "http://localhost:8111/api/v1/account/update-password-employee/${employee.username}/${Date.now()}">Reset password!</a>`
 			);
 
 			res.status(200).json(`Link update password received to email ${email} `);
@@ -220,6 +273,23 @@ accountRouter.post('/reset-password', async (req, res, next) => {
 	} else res.status(404).json('Email Employee not exist!');
 });
 
+accountRouter.put('/change-password/:username', async (req, res, next) => {
+	let username = req.params.username;
+	let newPassword = req.body.newPassword;
+	let oldPassword = req.body.oldPassword;
+
+	try {
+		let account = await db.Account.findByPk(username)
+		if (bcrypt.compareSync(oldPassword, account.password)) {
+			let ertPassword = await encryptPassword(newPassword);
+			await db.Account.update({ password: ertPassword }, { where: { username } });
+			return res.status(200).json('changed password');
+		}else return res.status(400).json('Mật khẩu cũ không đúng');
+	} catch (error) {
+		console.log(error);
+		res.status(500).json(error);
+	}
+});
 // END EMPLOYEE RESET PASSWORD
 module.exports = {
 	accountAPI: (app) => {

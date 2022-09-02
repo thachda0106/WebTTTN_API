@@ -50,9 +50,40 @@ const getPriceOrder = async (productID) => {
 	return price - price * product.dataValues.discountPercent;
 };
 
+const getPriceOrderTotal = (orderDetails) => {
+	let total = 0;
+	for (const orderDetail of orderDetails) {
+		total += orderDetail.dataValues.quantity * orderDetail.dataValues.priceOrder;
+	}
+	return total;
+};
+const getTotalDiscountVoucher = (orderVouchers) => {
+	let total = 0;
+	for (let i = 0; i < orderVouchers.length; i++) {
+		let priceDiscount =
+			orderVouchers[i].dataValues.voucher.priceOrderProduct * orderVouchers[i].dataValues.voucher.discountPercent;
+		if (priceDiscount > orderVouchers[i].dataValues.voucher.maxDiscountValue) {
+			priceDiscount = orderVouchers[i].dataValues.voucher.maxDiscountValue;
+		}
+		total += priceDiscount;
+	}
+	return total;
+};
+
+const uploadImageBase64 = (data, type) => {
+	const base64Data = data.base64.split(',')[1];
+	let fileName = Date.now() + '-' + data.path;
+	fs.writeFile('src/public/imgs/' + type + '/' + fileName, base64Data, 'base64', (err) => {
+		console.log(err);
+	});
+	return fileName;
+};
 module.exports = {
 	uploadImg,
 	uploadProductImgs,
+	uploadImageBase64,
 	encryptPassword,
-	getPriceOrder
+	getPriceOrder,
+	getTotalDiscountVoucher,
+	getPriceOrderTotal
 };

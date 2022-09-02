@@ -10,7 +10,7 @@ const sendEmail = async (to, subject, content) => {
 	});
 	var mainOptions = {
 		// thiết lập đối tượng, nội dung gửi mail
-		from: 'XXX STORE',
+		from: 'XXX STONE',
 		to,
 		subject,
 		text: 'You recieved message from thachbovjp@gmial.com',

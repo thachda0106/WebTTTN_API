@@ -6,7 +6,7 @@ const sequelize = new Sequelize('db_webtttn', 'root', null, {
 	host: 'localhost',
 	dialect: 'mysql',
 	logging: false,
-	port: 9306
+	port: 3306
 });
 
 let connectDB = async () => {

@@ -1,33 +1,11 @@
-const express = require('express');
-const bcrypt = require('bcrypt');
-let saltRounds = 10;
+require('dotenv').config();
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
-const encryptPassword = async (password) => {
-	try {
-		let salt = await bcrypt.genSalt(saltRounds);
-		let hash = await bcrypt.hash(password, salt);
-		return hash;
-	} catch (e) {
-		console.log(e.message);
-		return (code = '');
-	}
-	return code;
+const handle = async () => {
+	const checkSession = await stripe.checkout.sessions.retrieve(
+		'cs_test_a19gcWQ5MiDrhD89ghA0bCnjWt0glT1Tzh58lB3qFZgowmoc6njk1DRFpk'
+	);
+	console.log(checkSession);
 };
 
-function checkPassword(hash, password) {
-	bcrypt
-		.compare(hash, password)
-		.then((result) => {
-			return result;
-		})
-		.catch((err) => {
-			console.log(err);
-		});
-}
-
-let a = async () => {
-	const hash = await encryptPassword('12345678');
-	console.log(hash);
-};
-
-a();
+handle();
