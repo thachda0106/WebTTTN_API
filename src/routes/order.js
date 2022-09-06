@@ -7,6 +7,7 @@ const { body, validationResult } = require('express-validator');
 import { getPriceOrder, getTotalDiscountVoucher, getPriceOrderTotal } from '../utils/functions';
 const { Op } = require('sequelize');
 const { QueryTypes } = require('sequelize');
+import sendEmail from '../utils/mailer';
 // METHOD GET
 orderRouter.get('/status/:orderStatus', async (req, res, next) => {
 	let statusVN = { PENDING: 'Chờ duyệt', DELIVERING: 'Đang giao', RECEIVED: 'Đã giao', CANCELED: 'Đã hủy' };
@@ -325,7 +326,12 @@ orderRouter.post('/:cartID', async (req, res, next) => {
 			}
 			// update user used voucher
 		}
-
+		let customer = await db.Customer.findByPk(customerID);
+		await sendEmail(
+			customer.dataValues.email,
+			'STONE ĐẶT HÀNG THÀNH CÔNG',
+			`<b>Bạn đã đặt hàng thành công! Đơn hàng #${order.dataValues.orderID} </b>`
+		);
 		//return json
 		res.status(201).json('created order!');
 	} catch (error) {
@@ -440,10 +446,19 @@ orderRouter.put('/:orderID', async (req, res, next) => {
 		orderID = req.params.orderID,
 		employeeID = req.body.employeeID;
 	if (!'PENDING,DELIVERING,RECEIVED'.includes(orderStatus)) return res.status(400).json('orderStatus invalid!');
+	let statusVN = { PENDING: 'Chờ duyệt', DELIVERING: 'Đang giao', RECEIVED: 'Đã giao', CANCELED: 'Đã hủy' };
 	try {
 		if (orderStatus === 'RECEIVED') {
 			await db.Order.update({ orderStatus, isPay: true, employeeID }, { where: { orderID } });
 		} else await db.Order.update({ orderStatus, employeeID }, { where: { orderID } });
+
+		let order = await db.Order.findByPk(orderID);
+		let customer = await db.Customer.findByPk(order.dataValues.customerID);
+		await sendEmail(
+			customer.dataValues.email,
+			`STONE THÔNG BÁO ĐƠN HÀNG #${order.dataValues.orderID}  !`,
+			`<b>Đơn hàng #${order.dataValues.orderID} ${statusVN[orderStatus]}  </b>`
+		);
 		return res.status(201).json('orderStatus updated!');
 	} catch (error) {
 		return res.status(400).json(error);
@@ -464,6 +479,15 @@ orderRouter.put('/canceled/:orderID', async (req, res, next) => {
 				{ where: { productID: detail.dataValues.productID } }
 			);
 		}
+		//
+
+		let order = await db.Order.findByPk(orderID);
+		let customer = await db.Customer.findByPk(order.dataValues.customerID);
+		await sendEmail(
+			customer.dataValues.email,
+			`STONE THÔNG BÁO ĐƠN HÀNG #${order.dataValues.orderID}  !`,
+			`<b>Đơn hàng #${order.dataValues.orderID} đã được hủy  </b>`
+		);
 		return res.status(201).json('orderStatus updated!');
 	} catch (error) {
 		console.log(error);
