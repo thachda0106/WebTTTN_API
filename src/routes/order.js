@@ -283,14 +283,14 @@ orderRouter.post('/:cartID', async (req, res, next) => {
 		for (const cartItem of cartItems) {
 			//checkQuantity product before add order
 			let product = await db.Product.findByPk(cartItem.dataValues.productID);
-			if (product.dataValues.quantity < cartItem.dataValues.quantity) {
+			if (product.dataValues.quantity === 0 || product.dataValues.quantity < cartItem.dataValues.quantity) {
 				await db.CartItem.update(
 					{ quantity: product.dataValues.quantity },
 					{ where: { itemID: cartItem.dataValues.itemID } }
 				);
 
 				return res.status(406).json({
-					message: `Số lượng sản phẩm ${product.dataValues.name} hiện tại chỉ còn ${product.dataValues
+					message: `Số lượng sản phẩm ${product.dataValues.name} hiện tại còn ${product.dataValues
 						.quantity} sản phẩm!`,
 					info: { product, cartItem }
 				});

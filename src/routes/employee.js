@@ -40,7 +40,7 @@ let customerID = req.params.customerID;
 accountRouter.get('/check-session', async (req, res, next) => {
 	try {
 		let token = req.cookies.token?.split(';')[0];
-		if(!token) return res.status(403).json('session login expired!');
+		if (!token) return res.status(403).json('session login expired!');
 		let rest = jwt.verify(token, publicKey, { algorithms: [ 'RS256' ] });
 		let payload;
 		if (rest.payload.role === 'customer') {
@@ -101,7 +101,7 @@ accountRouter.post('/register', uploadImg.array('avatar', 1), async (req, res, n
 	// handle
 	let username = req.body.username,
 		password = await encryptPassword(req.body.password),
-		roleType = req.body.role;
+		roleType = req.body.role;x``
 	try {
 		let role = await db.Role.findOne({ where: { type: roleType } });
 		let account = { username, password, roleID: role.roleID };
@@ -279,12 +279,12 @@ accountRouter.put('/change-password/:username', async (req, res, next) => {
 	let oldPassword = req.body.oldPassword;
 
 	try {
-		let account = await db.Account.findByPk(username)
+		let account = await db.Account.findByPk(username);
 		if (bcrypt.compareSync(oldPassword, account.password)) {
 			let ertPassword = await encryptPassword(newPassword);
 			await db.Account.update({ password: ertPassword }, { where: { username } });
 			return res.status(200).json('changed password');
-		}else return res.status(400).json('Mật khẩu cũ không đúng');
+		} else return res.status(400).json('Mật khẩu cũ không đúng');
 	} catch (error) {
 		console.log(error);
 		res.status(500).json(error);
